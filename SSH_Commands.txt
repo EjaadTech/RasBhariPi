@@ -1,0 +1,101 @@
+FILE: SSH_Commands.txt
+AUTHOR: Zaid Pirwani
+PURPOSE: a log of ALL things done on RasBhariPi, mostly via the SSH
+
+FORMAT
+command written like this
+	text inside a file is written like this
+// this is a comment
+
+sudo raspi-config
+	changed password, ask ZP
+	changed hostname: RaspBhariPi
+
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo apt-get install tightvncserver
+
+mkdir rtc
+cd rtc
+// from http://www.suptronics.com/RPI.html
+// for RTC and STUFF
+wget http://www.suptronics.com/downloads/rtc-3.6.11.tar.gz
+tar xzvf rtc-3.6.11.tar.gz
+sudo dpkg -i rtc-3.6.11.deb
+sudo cp /boot/vmlinuz-3.6.11-atsw-rtc+ /boot/kernel.img
+sudo nano /etc/modules
+	i2c-bcm2708
+	rtc-pcf2127a
+sudo nano /etc/rc.local
+	echo pcf2127a 0x51 > /sys/class/i2c-adapter/i2c-1/new_device
+	( sleep 2; hwclock -s ) &
+sudo reboot
+sudo date MMDDHHMMYYYY.SS
+sudo hwclock -w
+sudo hwclock -r
+sudo hwclock -s
+
+//from http://raspberrypihq.com/how-to-share-a-folder-with-a-windows-computer-from-a-raspberry-pi/
+sudo apt-get install samba samba-common-bin
+sudo nano /etc/samba/smb.conf
+	workgroup = WORKGROUP
+	wins support = yes
+mkdir ~/share
+sudo nano /etc/samba/smb.conf
+	[RasBharaShare]
+	 comment=Shared folder on RaspBhariPi
+	 path=/home/pi/share
+	 browseable=Yes
+	 writeable=Yes
+	 only guest=no
+	 create mask=0777
+	 directory mask=0777
+	 public=no
+sudo smbpasswd -a pi
+
+sudo apt-get install build-essential python-rpi.gpio python-dev python-smbus i2c-tools git-core arduino
+
+sudo nano /etc/network/interfaces
+	auto lo
+	iface lo inet loopback
+	iface eth0 inet static
+	address 192.168.1.20
+	netmask 255.255.255.0
+	gateway 192.168.1.1
+// REMOVED [the above settings]
+// the PTCL Router reserves the IP 192.168.1.2 for Raspberry Pi by means of matching MAC at DHCP
+// the PTCL Router is also setup to forward ports 9000 to 9100 to Raspberry Pi
+// the usual ports are OPEN via the router by an offset of 9000
+// SSH	= 9022
+// HTTP	= 9080
+
+// there are 3 files on the server inside a folder and a PAGE on Ejaad's site
+// FOLDER: http://ejaad.com.pk/RasBhariPi
+// FILES
+// reportIP.php: records the IP of anyone who tries to access this file, the Raspberry Pi tries to GET this file at every reboot 
+// ^--- should password protect this somehow (maybe a URL argument to check before logging the IP address), else anyone accessing this will change the server IP
+// IPlog.txt: the log file for IPs, also contains the date/time of the IP
+// index.php: queries the IPlog.txt and gets the last line from it (the newest record), extracts the IP from the last line and REDIRECTS to that IP
+// Wordpress Page: a page on ejaad's website, has an iframe pointing to index.php inside the RasBhariPi folder
+// ACCESS URLS
+// http://RASPBHARIPI'sIP OR add :80OR add:9080
+// http://ejaad.com.pk/RasBhariPi:9080	--> will open the actual http site on Raspberry Pi
+// http://ejaad.com.pk/rasbharipi:9080	--> will open the actual http site of Raspberry Pi inside an iframe
+
+
+sudo nano /etc/ssh/sshd_config
+	Port 9022
+
+//http://www.raspberrypi.org/documentation/remote-access/web-server/apache.md
+sudo apt-get install apache2
+sudo nano /etc/apache2/ports.conf
+	NameVirtualHost *:9080
+	Listen 9080
+netstat -lntp
+sudo nano /var/www/index.html
+
+sudo apt-get install php5 libapache2-mod-php5
+
+sudo crontab -e
+	@reboot sleep 60 && wget http://ejaad.com.pk/RasBhariPi/reportIP.php
