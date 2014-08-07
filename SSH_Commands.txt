@@ -134,3 +134,9 @@ sudo nano /etc/default/fail2ban
 sudo nano /var/www/temp.php
 // added link to script in /var/www/inedx.html
 sudo nano /var/www/temp.php
+
+// installed wiringPi from: http://wiringpi.com/download-and-install/
+git clone git://git.drogon.net/wiringPi
+cd wiringPi
+./build
+// to check status of all pins: gpio readall
