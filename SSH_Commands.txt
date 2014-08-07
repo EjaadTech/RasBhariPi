@@ -128,3 +128,9 @@ sudo apt-get install fail2ban
 // no webmin rule or w00t-w00t rule
 sudo nano /etc/default/fail2ban
 	FAIL2BAN_OPTS="-x"
+
+// Added system status script from http://derkev.in/rpisysinfoscript/
+// Saved as /var/www/temp.php
+sudo nano /var/www/temp.php
+// added link to script in /var/www/inedx.html
+sudo nano /var/www/temp.php
