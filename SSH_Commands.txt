@@ -140,3 +140,22 @@ git clone git://git.drogon.net/wiringPi
 cd wiringPi
 ./build
 // to check status of all pins: gpio readall
+
+// Instaling WebIOPi
+wget http://cznic.dl.sourceforge.net/project/webiopi/WebIOPi-0.7.0.tar.gz
+tar xvzf WebIOPi-0.7.0.tar.gz
+cd WebIOPi-0.7.0
+sudo ./setup.sh
+sudo nano /etc/webiopi/config
+	[HTTP]
+	enabled = true
+	port = 9009
+	passwd-file = /etc/webiopi/passwd
+	doc-root = /home/pi/webiopi/examples/scripts/macros
+	welcome-file = index.html
+sudo webiopi-passwd
+	login: piWebIO
+	password: ask ZP
+// start on Boot
+sudo update-rc.d webiopi defaults
+
