@@ -1,0 +1,10 @@
+
+<!-- saved from url=(0073)http://cdn8.howtogeek.com/wp-content/uploads/gg/up/sshot5151a8c86fb85.txt -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><style type="text/css"></style></head><body style="zoom: 1;"><pre style="word-wrap: break-word; white-space: pre-wrap;"># Configuration for /etc/init.d/deluge-daemon
+
+# The init.d script will only run if this variable non-empty.
+DELUGED_USER="pi"             # !!!CHANGE THIS!!!!
+
+# Should we run at startup?
+RUN_AT_STARTUP="YES"
+</pre></body></html>

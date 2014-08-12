@@ -2,6 +2,8 @@ FILE: SSH_Commands.txt
 AUTHOR: Zaid Pirwani
 PURPOSE: a log of ALL things done on RasBhariPi, mostly via the SSH
 
+#define ZP ZaidPirwani.com
+
 FORMAT
 command written like this
 	text inside a file is written like this
@@ -99,6 +101,7 @@ sudo nano /var/www/index.html
 
 sudo apt-get install php5 libapache2-mod-php5
 
+// Ping the server on every reboot, to save IP
 sudo crontab -e
 	@reboot sleep 60 && wget http://ejaad.com.pk/RasBhariPi/reportIP.php
 
@@ -142,6 +145,7 @@ cd wiringPi
 // to check status of all pins: gpio readall
 
 // Instaling WebIOPi
+// from: https://code.google.com/p/webiopi/wiki/INSTALL
 wget http://cznic.dl.sourceforge.net/project/webiopi/WebIOPi-0.7.0.tar.gz
 tar xvzf WebIOPi-0.7.0.tar.gz
 cd WebIOPi-0.7.0
@@ -158,4 +162,79 @@ sudo webiopi-passwd
 	password: ask ZP
 // start on Boot
 sudo update-rc.d webiopi defaults
+
+// Ping the server every hour, to save IP
+// cront tab is: m h dom mon dow command
+sudo crontab -e
+	0 * * * * wget http://ejaad.com.pk/RasBhariPi/reportIP.php
+
+// Add the www folder of Apache to Samba local shares for easy access
+sudo nano /etc/samba/smb.conf
+	[RasBharaServer]
+	 comment=Apache HTTP Server (www) folder on RasBhariPi
+	 path=/var/www/
+	 browseable=Yes
+	 writeable=Yes
+	 only guest=no
+	 create mask=0777
+	 directory mask=0777
+	 public=no
+
+// NEW COMMAND; to view Kernal Rign Buffer messages
+dmesg | tail
+// seems to be all messages regarding device drivers
+
+// TorrentBox - using Deluge
+// from: http://www.howtogeek.com/142044/how-to-turn-a-raspberry-pi-into-an-always-on-bittorrent-box/ (not completely followed)
+// deluged is the main daemon
+// deluge-console is the SSH/command line way
+// allow_remote allows the deluge on pi to be used via a deluge installed on desktop
+// Web-Ui is needed to put deluge as an HTTP server
+sudo apt-get install deluged deluge-console
+deluged
+sudo pkill deluged
+sudo nano ~/.config/deluge/auth
+	pi:ask ZP:10
+deluged
+deluge-console
+	config -s allow_remote True
+	config allow_remote
+	exit
+sudo pkill deluged
+deluged
+// setting up WebUI
+sudo apt-get install python-mako deluge-web
+deluge-web
+// default port is 8112, default password is: deluge
+// opened RaspberryPiIP:8112,
+// changed the port to 9012
+// changed the password too, ask ZP for it
+// set the Downloads folder to /home/pi/Torrr
+// set the Add Torrents from folder to /home/pi/Torrr
+// set the max download speed 40Kibps
+// set the max upload speed 4Kibps
+// set Active Torrents to 1
+
+// scripts for starting deluge on boot
+sudo wget -O /etc/default/deluge-daemon http://cdn8.howtogeek.com/wp-content/uploads/gg/up/sshot5151a8c86fb85.txt
+sudo nano /etc/default/deluge-daemon
+sudo chmod 755 /etc/default/deluge-daemon
+sudo wget -O /etc/init.d/deluge-daemon http://cdn8.howtogeek.com/wp-content/uploads/gg/up/sshot5151aa042ad11.txt
+sudo chmod 755 /etc/init.d/deluge-daemon
+sudo update-rc.d deluge-daemon defaults
+// the files are also saved on git, replace _ with /
+// in folder: deluge_scripts
+sudo reboot
+
+// Add the Torrr folder to Samba local shares for easy access
+sudo nano /etc/samba/smb.conf
+	[Torrr]
+	 comment=Torrr folder on RasBhariPi
+	 path=/home/pi/Torrr
+	 browseable=Yes
+	 writeable=Yes
+	 only guest=no
+	 create mask=0777
+	 directory mask=0777
+	 public=no
 
