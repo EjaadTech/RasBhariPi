@@ -238,3 +238,14 @@ sudo nano /etc/samba/smb.conf
 	 directory mask=0777
 	 public=no
 
+// Formatting the SD Card to NTFS
+// first installing ntfsprogs to enable ntfs formatting from gparted
+sudo apt-get install ntfsprogs
+// use df -h to find out the correct drive
+// use gparted to do the formatting from GUI, just to be sure
+// use VNC for gui (should be already installed)
+
+// setting up Auto Mounting of SD Card
+sudo mkdir /media/shared
+sudo nano /etc/fstab
+	/dev/sda1	/media/shared	ntfs 0 0
