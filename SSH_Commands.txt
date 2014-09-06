@@ -249,3 +249,13 @@ sudo apt-get install ntfsprogs
 sudo mkdir /media/shared
 sudo nano /etc/fstab
 	/dev/sda1	/media/shared	ntfs 0 0
+
+// Update and upgrade Raspbian (to solve eluge problems)
+// deluge stops downloading, need to upgrade it, also upgrading raspbian
+// need to NOT download wolfram-engine, putting a hold on it
+sudo apt-mark hold wolfram-engine
+sudo apt-get update
+sudo apt-get upgrade
+
+
+
